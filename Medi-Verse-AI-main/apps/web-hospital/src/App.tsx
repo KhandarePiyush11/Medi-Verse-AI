@@ -1052,7 +1052,7 @@ export default function App() {
 
                   {/* Email / Username */}
                   <div>
-                    <label style={{ fontSize: '12px', fontWeight 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
                       Email / Username
                     </label>
                     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
