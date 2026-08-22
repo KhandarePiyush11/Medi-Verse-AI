@@ -484,6 +484,40 @@ export default function App() {
     nodeId: 'NODE #LAB-BIOCHEM-01'
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [authMode, setAuthMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
+  const [registerForm, setRegisterForm] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    abhaId: '',
+    password: '',
+    confirmPassword: '',
+    age: '28',
+    gender: 'MALE',
+    illnesses: '',
+    termsAccepted: true
+  });
+
+  const handleRegisterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (registerForm.password && registerForm.password !== registerForm.confirmPassword) {
+      alert("Passwords do not match! Please check your password entry.");
+      return;
+    }
+    const abhaNumber = registerForm.abhaId || `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newProfile: UserProfile = {
+      name: registerForm.fullName || 'New Patient',
+      role: 'PATIENT',
+      identifier: `ABHA: ${abhaNumber}`,
+      age: Number(registerForm.age) || 28,
+      illnesses: registerForm.illnesses || 'None'
+    };
+    setUserProfile(newProfile);
+    localStorage.setItem('mediVerse_userProfile', JSON.stringify(newProfile));
+    setShowLoginModal(false);
+    setActivePage('PATIENT_PHR');
+    alert(`Account Created Successfully! Welcome to MediVerse AI, ${newProfile.name}. ABHA Digital Health Passport Issued (${newProfile.identifier}).`);
+  };
 
   const handleSocialLogin = (provider: string) => {
     const nameStr = loginForm.email || (provider === 'Google' ? 'Google User' : provider === 'Apple' ? 'Apple User' : 'MediVerse Key User');
@@ -945,167 +979,395 @@ export default function App() {
         </div>
       )}
 
-      {/* MEDIVERSE AI PORTAL LOGIN MODAL MATCHING EXACT PROVIDED DESIGN */}
+      {/* MEDIVERSE AI PORTAL LOGIN & REGISTRATION MODAL */}
       {showLoginModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(12px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ width: '440px', padding: '36px 32px', background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 25px 60px rgba(15, 23, 42, 0.25)', position: 'relative', maxHeight: '92vh', overflowY: 'auto' }}>
+          <div style={{ width: '460px', padding: '36px 32px', background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 25px 60px rgba(15, 23, 42, 0.25)', position: 'relative', maxHeight: '94vh', overflowY: 'auto' }}>
             
             {/* Close Button */}
             <button onClick={() => setShowLoginModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', background: '#F1F5F9', border: 'none', width: '32px', height: '32px', borderRadius: '50%', color: '#64748B', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <X size={18} />
             </button>
 
-            {/* BRAND HEADER MATCHING PROVIDED IMAGE */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #1B365D 0%, #27487F 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(27, 54, 93, 0.3)' }}>
-                  <HeartPulse size={28} color="#00B4D8" />
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: '26px', fontWeight: 800, color: '#1B365D', lineHeight: '1', letterSpacing: '-0.02em' }}>
-                    MediVerse<sup style={{ fontSize: '11px', color: '#8FA334', fontWeight: 800, marginLeft: '3px' }}>AI</sup>
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, marginTop: '2px' }}>
-                    AI-Powered Health Solutions
-                  </div>
-                </div>
-              </div>
-              <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A', marginTop: '16px', marginBottom: 0, letterSpacing: '-0.01em' }}>
-                Access Your MediVerse AI Portal
-              </h2>
-            </div>
-
-            {/* LOGIN FORM */}
-            <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              
-              {/* Role / Access Tier Select */}
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
-                  Portal Role / Access Tier
-                </label>
-                <select 
-                  value={loginRole} 
-                  onChange={(e) => setLoginRole(e.target.value as any)}
-                  style={{ width: '100%', padding: '12px 16px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#F8FAFC', fontSize: '13px', fontWeight: 700, color: '#1B365D', outline: 'none' }}
-                >
-                  <option value="PATIENT">Patient Portal (PHR Health Passport)</option>
-                  <option value="DOCTOR">Doctor Clinical Cockpit (SaMD CDSS)</option>
-                  <option value="RECEPTION">Reception Desk & NHCX Terminal</option>
-                  <option value="NURSE">Smart Nursing Station & Telemetry</option>
-                  <option value="LAB_TECH">Diagnostic Lab & LIMS Ingestion</option>
-                </select>
-              </div>
-
-              {/* Email / Username */}
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
-                  Email / Username
-                </label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <User size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
-                  <input 
-                    type="text"
-                    placeholder="Enter your email"
-                    value={loginForm.email || loginForm.name}
-                    onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value, name: e.target.value })}
-                    required
-                    style={{ width: '100%', padding: '12px 16px 12px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
-                  />
-                </div>
-              </div>
-
-              {/* Password */}
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
-                  Password
-                </label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <Lock size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
-                  <input 
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={loginForm.password}
-                    onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                    required
-                    style={{ width: '100%', padding: '12px 46px 12px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
-                  />
-                  <button 
-                    type="button" 
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: 'absolute', right: '16px', background: 'transparent', border: 'none', color: '#64748B', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                  >
-                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-                  </button>
-                </div>
-                <div style={{ textAlign: 'right', marginTop: '6px' }}>
-                  <a href="#forgot" onClick={(e) => { e.preventDefault(); alert('Password reset link sent to your registered email!'); }} style={{ fontSize: '12px', color: '#1B365D', fontWeight: 700, textDecoration: 'none' }}>
-                    Forgot Password?
-                  </a>
-                </div>
-              </div>
-
-              {/* LOG IN BUTTON */}
+            {/* TOGGLE TAB HEADER */}
+            <div style={{ display: 'flex', background: '#F1F5F9', padding: '4px', borderRadius: '30px', marginBottom: '20px' }}>
               <button 
-                type="submit" 
-                style={{ 
-                  width: '100%', 
-                  background: '#27487F', 
-                  color: '#FFFFFF', 
-                  border: 'none', 
-                  padding: '14px', 
-                  borderRadius: '24px', 
-                  fontWeight: 800, 
-                  fontSize: '14px', 
-                  letterSpacing: '0.05em', 
-                  cursor: 'pointer', 
-                  marginTop: '4px',
-                  boxShadow: '0 6px 18px rgba(39, 72, 127, 0.35)'
-                }}
+                type="button"
+                onClick={() => setAuthMode('LOGIN')}
+                style={{ flex: 1, padding: '8px 16px', borderRadius: '24px', border: 'none', background: authMode === 'LOGIN' ? '#1B365D' : 'transparent', color: authMode === 'LOGIN' ? '#FFFFFF' : '#64748B', fontWeight: 800, fontSize: '12px', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 LOG IN
               </button>
-            </form>
-
-            {/* DIVIDER */}
-            <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: '12px' }}>
-              <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
-              <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, letterSpacing: '0.05em' }}>OR LOG IN WITH</span>
-              <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
-            </div>
-
-            {/* SOCIAL LOGINS */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <button type="button" onClick={() => handleSocialLogin('Google')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                  Continue with Google
-                </button>
-                <button type="button" onClick={() => handleSocialLogin('Apple')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.47c.65-.8 1.09-1.92.97-3.04-.94.04-2.08.63-2.75 1.42-.6.7-1.12 1.83-.98 2.93 1.05.08 2.11-.51 2.76-1.31z"/></svg>
-                  Continue with Apple
-                </button>
-              </div>
-
-              <button type="button" onClick={() => handleSocialLogin('MediVerse Key')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '11px 14px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#1B365D', cursor: 'pointer' }}>
-                <Key size={16} color="#1B365D" />
-                Continue with MediVerse Key
+              <button 
+                type="button"
+                onClick={() => setAuthMode('REGISTER')}
+                style={{ flex: 1, padding: '8px 16px', borderRadius: '24px', border: 'none', background: authMode === 'REGISTER' ? '#1B365D' : 'transparent', color: authMode === 'REGISTER' ? '#FFFFFF' : '#64748B', fontWeight: 800, fontSize: '12px', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                CREATE NEW ACCOUNT
               </button>
             </div>
 
-            {/* FOOTER LINKS */}
-            <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '12px', color: '#64748B' }}>
-              <div>
-                New to MediVerse AI?{' '}
-                <a href="#create" onClick={(e) => { e.preventDefault(); alert('Create Account feature opened. Enter your details to register.'); }} style={{ color: '#1B365D', fontWeight: 800, textDecoration: 'none' }}>
-                  Create an account.
-                </a>
-              </div>
-              <div style={{ marginTop: '6px' }}>
-                <a href="#support" onClick={(e) => { e.preventDefault(); alert('Support team connected: support@mediverse.ai | 1800-11-2026'); }} style={{ color: '#1B365D', fontWeight: 700, textDecoration: 'none' }}>
-                  Contact Support
-                </a>
-              </div>
-            </div>
+            {authMode === 'LOGIN' ? (
+              <>
+                {/* BRAND HEADER MATCHING PROVIDED IMAGE */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '24px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #1B365D 0%, #27487F 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(27, 54, 93, 0.3)' }}>
+                      <HeartPulse size={28} color="#00B4D8" />
+                    </div>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontSize: '26px', fontWeight: 800, color: '#1B365D', lineHeight: '1', letterSpacing: '-0.02em' }}>
+                        MediVerse<sup style={{ fontSize: '11px', color: '#8FA334', fontWeight: 800, marginLeft: '3px' }}>AI</sup>
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 600, marginTop: '2px' }}>
+                        AI-Powered Health Solutions
+                      </div>
+                    </div>
+                  </div>
+                  <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A', marginTop: '16px', marginBottom: 0, letterSpacing: '-0.01em' }}>
+                    Access Your MediVerse AI Portal
+                  </h2>
+                </div>
+
+                {/* LOGIN FORM */}
+                <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  
+                  {/* Role / Access Tier Select */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
+                      Portal Role / Access Tier
+                    </label>
+                    <select 
+                      value={loginRole} 
+                      onChange={(e) => setLoginRole(e.target.value as any)}
+                      style={{ width: '100%', padding: '12px 16px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#F8FAFC', fontSize: '13px', fontWeight: 700, color: '#1B365D', outline: 'none' }}
+                    >
+                      <option value="PATIENT">Patient Portal (PHR Health Passport)</option>
+                      <option value="DOCTOR">Doctor Clinical Cockpit (SaMD CDSS)</option>
+                      <option value="RECEPTION">Reception Desk & NHCX Terminal</option>
+                      <option value="NURSE">Smart Nursing Station & Telemetry</option>
+                      <option value="LAB_TECH">Diagnostic Lab & LIMS Ingestion</option>
+                    </select>
+                  </div>
+
+                  {/* Email / Username */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
+                      Email / Username
+                    </label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <User size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
+                      <input 
+                        type="text"
+                        placeholder="Enter your email"
+                        value={loginForm.email || loginForm.name}
+                        onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value, name: e.target.value })}
+                        required
+                        style={{ width: '100%', padding: '12px 16px 12px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Password */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '6px' }}>
+                      Password
+                    </label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <Lock size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
+                      <input 
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter your password"
+                        value={loginForm.password}
+                        onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                        required
+                        style={{ width: '100%', padding: '12px 46px 12px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ position: 'absolute', right: '16px', background: 'transparent', border: 'none', color: '#64748B', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                      >
+                        {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                      </button>
+                    </div>
+                    <div style={{ textAlign: 'right', marginTop: '6px' }}>
+                      <a href="#forgot" onClick={(e) => { e.preventDefault(); alert('Password reset link sent to your registered email!'); }} style={{ fontSize: '12px', color: '#1B365D', fontWeight: 700, textDecoration: 'none' }}>
+                        Forgot Password?
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* LOG IN BUTTON */}
+                  <button 
+                    type="submit" 
+                    style={{ 
+                      width: '100%', 
+                      background: '#27487F', 
+                      color: '#FFFFFF', 
+                      border: 'none', 
+                      padding: '14px', 
+                      borderRadius: '24px', 
+                      fontWeight: 800, 
+                      fontSize: '14px', 
+                      letterSpacing: '0.05em', 
+                      cursor: 'pointer', 
+                      marginTop: '4px',
+                      boxShadow: '0 6px 18px rgba(39, 72, 127, 0.35)'
+                    }}
+                  >
+                    LOG IN
+                  </button>
+                </form>
+
+                {/* DIVIDER */}
+                <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: '12px' }}>
+                  <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+                  <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, letterSpacing: '0.05em' }}>OR LOG IN WITH</span>
+                  <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+                </div>
+
+                {/* SOCIAL LOGINS */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <button type="button" onClick={() => handleSocialLogin('Google')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                      Continue with Google
+                    </button>
+                    <button type="button" onClick={() => handleSocialLogin('Apple')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.47c.65-.8 1.09-1.92.97-3.04-.94.04-2.08.63-2.75 1.42-.6.7-1.12 1.83-.98 2.93 1.05.08 2.11-.51 2.76-1.31z"/></svg>
+                      Continue with Apple
+                    </button>
+                  </div>
+
+                  <button type="button" onClick={() => handleSocialLogin('MediVerse Key')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '11px 14px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#1B365D', cursor: 'pointer' }}>
+                    <Key size={16} color="#1B365D" />
+                    Continue with MediVerse Key
+                  </button>
+                </div>
+
+                {/* FOOTER LINKS */}
+                <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '12px', color: '#64748B' }}>
+                  <div>
+                    New to MediVerse AI?{' '}
+                    <button type="button" onClick={() => setAuthMode('REGISTER')} style={{ background: 'transparent', border: 'none', color: '#1B365D', fontWeight: 800, cursor: 'pointer', textDecoration: 'none' }}>
+                      Create an account.
+                    </button>
+                  </div>
+                  <div style={{ marginTop: '6px' }}>
+                    <a href="#support" onClick={(e) => { e.preventDefault(); alert('Support team connected: support@mediverse.ai | 1800-11-2026'); }} style={{ color: '#1B365D', fontWeight: 700, textDecoration: 'none' }}>
+                      Contact Support
+                    </a>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* CREATE NEW PATIENT ACCOUNT HEADER */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
+                    <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #1B365D 0%, #27487F 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(27, 54, 93, 0.3)' }}>
+                      <HeartPulse size={26} color="#00B4D8" />
+                    </div>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontSize: '24px', fontWeight: 800, color: '#1B365D', lineHeight: '1', letterSpacing: '-0.02em' }}>
+                        MediVerse<sup style={{ fontSize: '11px', color: '#8FA334', fontWeight: 800, marginLeft: '3px' }}>AI</sup>
+                      </div>
+                      <div style={{ fontSize: '10px', color: '#64748B', fontWeight: 600, marginTop: '2px' }}>
+                        AI-Powered Health Solutions
+                      </div>
+                    </div>
+                  </div>
+                  <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0F172A', marginTop: '12px', marginBottom: 0 }}>
+                    Create Your Patient Account
+                  </h2>
+                  <p style={{ fontSize: '12px', color: '#64748B', margin: '4px 0 0 0' }}>
+                    Register for instant OPD booking, ABHA Passport & E-Pharmacy
+                  </p>
+                </div>
+
+                {/* REGISTER FORM FOR NEW PATIENTS */}
+                <form onSubmit={handleRegisterSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  
+                  {/* Full Name */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                      Full Name
+                    </label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <User size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
+                      <input 
+                        type="text"
+                        placeholder="Enter your full name"
+                        value={registerForm.fullName}
+                        onChange={(e) => setRegisterForm({ ...registerForm, fullName: e.target.value })}
+                        required
+                        style={{ width: '100%', padding: '10px 16px 10px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Mobile Number / ABHA ID */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                      Mobile Number / ABHA ID
+                    </label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <ShieldCheck size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
+                      <input 
+                        type="text"
+                        placeholder="Enter 10-digit mobile number or ABHA ID"
+                        value={registerForm.phone}
+                        onChange={(e) => setRegisterForm({ ...registerForm, phone: e.target.value })}
+                        required
+                        style={{ width: '100%', padding: '10px 16px 10px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email Address */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                      Email Address
+                    </label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <Globe size={18} color="#64748B" style={{ position: 'absolute', left: '16px' }} />
+                      <input 
+                        type="email"
+                        placeholder="Enter your email"
+                        value={registerForm.email}
+                        onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
+                        required
+                        style={{ width: '100%', padding: '10px 16px 10px 46px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '13px', color: '#0F172A', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Password & Confirm Password */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                        Password
+                      </label>
+                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <Lock size={16} color="#64748B" style={{ position: 'absolute', left: '14px' }} />
+                        <input 
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          value={registerForm.password}
+                          onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+                          required
+                          style={{ width: '100%', padding: '10px 12px 10px 38px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', color: '#0F172A', outline: 'none' }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                        Confirm
+                      </label>
+                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <Lock size={16} color="#64748B" style={{ position: 'absolute', left: '14px' }} />
+                        <input 
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Confirm"
+                          value={registerForm.confirmPassword}
+                          onChange={(e) => setRegisterForm({ ...registerForm, confirmPassword: e.target.value })}
+                          required
+                          style={{ width: '100%', padding: '10px 12px 10px 38px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', color: '#0F172A', outline: 'none' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Age & Gender */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                        Age (Years)
+                      </label>
+                      <input 
+                        type="number"
+                        placeholder="28"
+                        value={registerForm.age}
+                        onChange={(e) => setRegisterForm({ ...registerForm, age: e.target.value })}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', color: '#0F172A', outline: 'none' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                        Gender
+                      </label>
+                      <select 
+                        value={registerForm.gender} 
+                        onChange={(e) => setRegisterForm({ ...registerForm, gender: e.target.value })}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', outline: 'none' }}
+                      >
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Medical Conditions / Allergies */}
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A', display: 'block', marginBottom: '4px' }}>
+                      Pre-existing Conditions / Allergies
+                    </label>
+                    <input 
+                      type="text"
+                      placeholder="e.g., Asthma, Hypertension, Peanut Allergy (optional)"
+                      value={registerForm.illnesses}
+                      onChange={(e) => setRegisterForm({ ...registerForm, illnesses: e.target.value })}
+                      style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', color: '#0F172A', outline: 'none' }}
+                    />
+                  </div>
+
+                  {/* Terms Checkbox */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
+                    <input 
+                      type="checkbox"
+                      id="termsCheck"
+                      checked={registerForm.termsAccepted}
+                      onChange={(e) => setRegisterForm({ ...registerForm, termsAccepted: e.target.checked })}
+                      required
+                    />
+                    <label htmlFor="termsCheck" style={{ fontSize: '11px', color: '#475569' }}>
+                      I agree to ABDM Digital Health Privacy Terms & Data Consent.
+                    </label>
+                  </div>
+
+                  {/* CREATE PATIENT ACCOUNT BUTTON */}
+                  <button 
+                    type="submit" 
+                    style={{ 
+                      width: '100%', 
+                      background: '#27487F', 
+                      color: '#FFFFFF', 
+                      border: 'none', 
+                      padding: '14px', 
+                      borderRadius: '24px', 
+                      fontWeight: 800, 
+                      fontSize: '14px', 
+                      letterSpacing: '0.05em', 
+                      cursor: 'pointer', 
+                      marginTop: '6px',
+                      boxShadow: '0 6px 18px rgba(39, 72, 127, 0.35)'
+                    }}
+                  >
+                    CREATE PATIENT ACCOUNT
+                  </button>
+                </form>
+
+                {/* SWITCH TO LOGIN */}
+                <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '12px', color: '#64748B' }}>
+                  Already registered on MediVerse AI?{' '}
+                  <button type="button" onClick={() => setAuthMode('LOGIN')} style={{ background: 'transparent', border: 'none', color: '#1B365D', fontWeight: 800, cursor: 'pointer', textDecoration: 'underline' }}>
+                    Log in here.
+                  </button>
+                </div>
+              </>
+            )}
 
           </div>
         </div>
