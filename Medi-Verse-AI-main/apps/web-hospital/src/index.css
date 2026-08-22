@@ -1,0 +1,84 @@
+:root {
+  --surface: #F8FAFC;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F1F5F9;
+  --surface-container: #E2E8F0;
+  --surface-container-high: #CBD5E1;
+  --surface-container-highest: #94A3B8;
+  --on-surface: #0F172A;
+  --on-surface-variant: #475569;
+  --primary: #0284C7;
+  --primary-container: #00B4D8;
+  --primary-fixed-dim: #0077B6;
+  --secondary: #2563EB;
+  --secondary-container: #3B82F6;
+  --tertiary-fixed-dim: #7C3AED;
+  --error: #DC2626;
+  --error-container: #FEE2E2;
+  --outline-variant: #CBD5E1;
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 180, 216, 0.25);
+  --cyan-glow: rgba(0, 180, 216, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+.font-data-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Light Glassmorphism Panel Component */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+}
+
+.glow-cyan {
+  text-shadow: 0 0 12px rgba(0, 180, 216, 0.4);
+}
+
+.glow-box-cyan {
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.25);
+}
+
+.glow-box-red {
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
+}
+
+/* Custom Scrollbars for Light Mode */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-container);
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.04); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}

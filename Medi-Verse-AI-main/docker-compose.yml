@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # 1. Multi-Tenant PostgreSQL 16 Database with Row-Level Security (RLS)
+  postgres:
+    image: postgres:16-alpine
+    container_name: neuro-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: neuro_synapse_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secure_pass_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./services/core-api/db/migrations/000001_init_schema.up.sql:/docker-entrypoint-initdb.d/01_init_schema.sql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d neuro_synapse_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Go 1.23 Core API Gateway (ABDM + NHCX + mTLS + RLS)
+  core-api:
+    build:
+      context: ./services/core-api
+      dockerfile: Dockerfile
+    container_name: neuro-core-api
+    restart: always
+    environment:
+      PORT: "8080"
+      DATABASE_URL: "postgres://postgres:postgres_secure_pass_2026@postgres:5432/neuro_synapse_db?sslmode=disable"
+      FHIR_SERVER_URL: "http://hapi.fhir.org/baseR4"
+      NHCX_GATEWAY_URL: "https://nhcx.abdm.gov.in/api/v1/claims"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 3. Python FastAPI SaMD AI Inference Engine (MONAI + Bio-BERT + CDSCO MD-9 Audit)
+  ai-engine:
+    build:
+      context: ./services/ai-engine
+      dockerfile: Dockerfile
+    container_name: neuro-ai-engine
+    restart: always
+    environment:
+      PORT: "8000"
+      CDSCO_MD9_LICENSE: "Form MD-9 / CLA / CDSCO-SaMD-2024-8849"
+    ports:
+      - "8000:8000"
+
+  # 4. React 19 Hospital Clinical Workstation SPA (WebGPU PACS + IndexedDB Edge Sync)
+  web-hospital:
+    build:
+      context: ./apps/web-hospital
+      dockerfile: Dockerfile
+    container_name: neuro-web-hospital
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - core-api
+      - ai-engine
+
+  # 5. Next.js 15 B2C Public Consumer Gateway (Outbreak Heatmap + ABHA Portal)
+  web-consumer:
+    build:
+      context: ./apps/web-consumer
+      dockerfile: Dockerfile
+    container_name: neuro-web-consumer
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - core-api
+
+volumes:
+  postgres_data:
