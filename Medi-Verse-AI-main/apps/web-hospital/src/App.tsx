@@ -90,7 +90,8 @@ import {
   Newspaper,
   Bug,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Home
 } from 'lucide-react';
 import { 
   saveOfflinePrescription, 
@@ -682,51 +683,90 @@ export default function App() {
 
   const activeSlide = heroSlides[currentSlide];
 
-  // RENDER CUSTOM NAVBAR PER ROLE MATRICES
+  // RENDER CUSTOM NAVBAR PER ROLE MATRICES WITH ATTRACTIVE ICON THEME
   const renderRoleCustomNavbar = () => {
     const role = userProfile?.role || 'PATIENT';
 
     if (role === 'DOCTOR') {
       return (
-        <header style={{ height: '72px', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
+        <header className="header-glass" style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 28px', position: 'sticky', top: 0, zIndex: 50 }}>
           <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} title="Go to Main Home Page">
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Stethoscope size={22} color="#FFF" />
+            <div className="brand-icon-glow" style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(2, 132, 199, 0.45)' }}>
+              <Stethoscope size={22} color="#FFF" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
             </div>
             <div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>Doctor Clinical Cockpit</div>
-              <div className="font-data-mono" style={{ fontSize: '10px', color: '#0077B6', fontWeight: 700 }}>
+              <div style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>Doctor Clinical Cockpit</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '10px', background: 'rgba(2, 132, 199, 0.12)', color: '#0284C7', border: '1px solid rgba(2, 132, 199, 0.25)' }}>CLINICAL v8.0</span>
+              </div>
+              <div className="font-data-mono" style={{ fontSize: '10px', color: '#0284C7', fontWeight: 700, marginTop: '2px' }}>
                 {userProfile?.facility} • NMC #{userProfile?.identifier}
               </div>
             </div>
           </div>
 
-          <nav style={{ display: 'flex', gap: '4px', background: '#F1F5F9', padding: '4px', borderRadius: '8px' }}>
-            {[
-              { page: 'HOME', label: 'Main Home', icon: Globe },
-              { page: 'DOCTOR_COCKPIT', label: 'OPD Stream (2 Crit | 14 Rout)', icon: UserCheck },
-              { page: 'DOCTOR_PACS_3D', label: '3D PACS Studio', icon: Brain },
-              { page: 'DOCTOR_SAMD_ENGINE', label: 'SaMD CDSS AI Engine', icon: Cpu },
-              { page: 'DOCTOR_ANTIBIOGRAM', label: 'Antibiogram Radar', icon: ShieldCheck }
-            ].map((item) => {
-              const Icon = item.icon;
-              const isActive = activePage === item.page;
-              return (
-                <button key={item.page} onClick={() => setActivePage(item.page as PageRoute)} style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isActive ? '#0077B6' : 'transparent', color: isActive ? '#FFF' : '#475569', fontWeight: 700, fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Icon size={14} /> {item.label}
-                </button>
-              );
-            })}
-          </nav>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, margin: '0 16px', overflow: 'hidden' }}>
+            <nav 
+              className="scrollable-nav-bar"
+              onWheel={(e) => {
+                if (e.deltaY !== 0) {
+                  e.currentTarget.scrollLeft += e.deltaY;
+                }
+              }}
+            >
+              {[
+                { page: 'HOME', label: 'Main Home', icon: Home, badgeClass: 'icon-badge-home' },
+                { page: 'DOCTOR_COCKPIT', label: 'OPD Stream (2 Crit | 14 Rout)', icon: UserCheck, badgeClass: 'icon-badge-doctor' },
+                { page: 'DOCTOR_PACS_3D', label: '3D PACS Studio', icon: Brain, badgeClass: 'icon-badge-ai' },
+                { page: 'DOCTOR_SAMD_ENGINE', label: 'SaMD CDSS AI Engine', icon: Cpu, badgeClass: 'icon-badge-map' },
+                { page: 'DOCTOR_ANTIBIOGRAM', label: 'Antibiogram Radar', icon: ShieldCheck, badgeClass: 'icon-badge-pharmacy' }
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = activePage === item.page;
+                return (
+                  <button 
+                    key={item.page} 
+                    onClick={() => setActivePage(item.page as PageRoute)} 
+                    className="nav-tab-btn"
+                    style={{ 
+                      padding: '6px 12px', 
+                      borderRadius: '8px', 
+                      border: isActive ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid transparent', 
+                      background: isActive ? 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)' : 'transparent', 
+                      color: isActive ? '#FFF' : '#334155', 
+                      fontWeight: isActive ? 800 : 600, 
+                      fontSize: '11px', 
+                      cursor: 'pointer', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '7px',
+                      flexShrink: 0,
+                      boxShadow: isActive ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none'
+                    }}
+                  >
+                    <div className={`nav-icon-container ${isActive ? 'icon-badge-active' : item.badgeClass}`} style={{ width: '22px', height: '22px', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={13} strokeWidth={isActive ? 2.5 : 2} />
+                    </div>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button onClick={() => setIsVoiceScribeActive(!isVoiceScribeActive)} style={{ background: isVoiceScribeActive ? '#DCFCE7' : '#F1F5F9', border: isVoiceScribeActive ? '1px solid #86EFAC' : '1px solid #CBD5E1', color: isVoiceScribeActive ? '#15803D' : '#475569', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {isVoiceScribeActive ? <Mic size={14} /> : <MicOff size={14} />} {isVoiceScribeActive ? 'Voice Scribe ACTIVE' : 'Voice Scribe OFF'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <button onClick={() => setIsVoiceScribeActive(!isVoiceScribeActive)} style={{ background: isVoiceScribeActive ? '#DCFCE7' : '#F1F5F9', border: isVoiceScribeActive ? '1px solid #86EFAC' : '1px solid #CBD5E1', color: isVoiceScribeActive ? '#15803D' : '#475569', padding: '7px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
+              <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: isVoiceScribeActive ? '#16A34A' : '#94A3B8', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {isVoiceScribeActive ? <Mic size={11} /> : <MicOff size={11} />}
+              </div>
+              <span>{isVoiceScribeActive ? 'Voice Scribe ACTIVE' : 'Voice Scribe OFF'}</span>
             </button>
-            <button onClick={() => alert('Batch Sign Executed for 4 Rx. Cryptographic Stamp Applied.')} style={{ background: '#0077B6', color: '#FFF', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <LockKeyhole size={14} /> Batch Sign Rx ({pendingRxSignCount})
+            <button onClick={() => alert('Batch Sign Executed for 4 Rx. Cryptographic Stamp Applied.')} style={{ background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)', color: '#FFF', border: 'none', padding: '7px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 14px rgba(2, 132, 199, 0.3)' }}>
+              <LockKeyhole size={13} /> Batch Sign Rx ({pendingRxSignCount})
             </button>
-            <button onClick={handleLogout} style={{ background: 'transparent', border: 'none', color: '#DC2626', cursor: 'pointer' }}><LogOut size={16} /></button>
+            <button onClick={handleLogout} title="Logout" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.25)', color: '#DC2626', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LogOut size={15} />
+            </button>
           </div>
         </header>
       );
@@ -734,42 +774,81 @@ export default function App() {
 
     if (role === 'RECEPTION') {
       return (
-        <header style={{ height: '72px', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
-          <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} title="Go to Main Home Page">
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#0077B6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Building2 size={22} color="#FFF" />
+        <header className="header-glass" style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 28px', position: 'sticky', top: 0, zIndex: 50 }}>
+          <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flexShrink: 0 }} title="Go to Main Home Page">
+            <div className="brand-icon-glow" style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #0284C7 0%, #1D4ED8 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(2, 132, 199, 0.45)' }}>
+              <Building2 size={22} color="#FFF" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
             </div>
             <div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>Reception Desk & NHCX Terminal</div>
-              <div className="font-data-mono" style={{ fontSize: '10px', color: '#64748B' }}>
+              <div style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>Reception Desk & NHCX</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '10px', background: 'rgba(29, 78, 216, 0.12)', color: '#1D4ED8', border: '1px solid rgba(29, 78, 216, 0.25)' }}>TERMINAL 02</span>
+              </div>
+              <div className="font-data-mono" style={{ fontSize: '10px', color: '#64748B', marginTop: '2px' }}>
                 {userProfile?.identifier} • Cash: ₹{cashDrawerTotal.cash} | UPI: ₹{cashDrawerTotal.digital}
               </div>
             </div>
           </div>
 
-          <nav style={{ display: 'flex', gap: '4px', background: '#F1F5F9', padding: '4px', borderRadius: '8px' }}>
-            {[
-              { page: 'HOME', label: 'Main Home', icon: Globe },
-              { page: 'RECEPTION_NHCX', label: 'NHCX Cashless Claims', icon: ShieldCheck },
-              { page: 'RECEPTION_ABDM_SCAN', label: 'ABDM Scan & Share', icon: QrCode },
-              { page: 'RECEPTION_TOKENS', label: 'OPD Token Dispatcher', icon: Clock },
-              { page: 'RECEPTION_BED_MATRIX', label: 'Ward & Bed Matrix', icon: Bed }
-            ].map((item) => {
-              const Icon = item.icon;
-              const isActive = activePage === item.page;
-              return (
-                <button key={item.page} onClick={() => setActivePage(item.page as PageRoute)} style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isActive ? '#0077B6' : 'transparent', color: isActive ? '#FFF' : '#475569', fontWeight: 700, fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Icon size={14} /> {item.label}
-                </button>
-              );
-            })}
-          </nav>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, margin: '0 16px', overflow: 'hidden' }}>
+            <nav 
+              className="scrollable-nav-bar"
+              onWheel={(e) => {
+                if (e.deltaY !== 0) {
+                  e.currentTarget.scrollLeft += e.deltaY;
+                }
+              }}
+            >
+              {[
+                { page: 'HOME', label: 'Main Home', icon: Home, badgeClass: 'icon-badge-home' },
+                { page: 'RECEPTION_NHCX', label: 'NHCX Cashless Claims', icon: ShieldCheck, badgeClass: 'icon-badge-pharmacy' },
+                { page: 'RECEPTION_ABDM_SCAN', label: 'ABDM Scan & Share', icon: QrCode, badgeClass: 'icon-badge-ai' },
+                { page: 'RECEPTION_TOKENS', label: 'OPD Token Dispatcher', icon: Clock, badgeClass: 'icon-badge-news' },
+                { page: 'RECEPTION_BED_MATRIX', label: 'Ward & Bed Matrix', icon: Bed, badgeClass: 'icon-badge-map' }
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = activePage === item.page;
+                return (
+                  <button 
+                    key={item.page} 
+                    onClick={() => setActivePage(item.page as PageRoute)} 
+                    className="nav-tab-btn"
+                    style={{ 
+                      padding: '6px 12px', 
+                      borderRadius: '8px', 
+                      border: isActive ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid transparent', 
+                      background: isActive ? 'linear-gradient(135deg, #0284C7 0%, #1D4ED8 100%)' : 'transparent', 
+                      color: isActive ? '#FFF' : '#334155', 
+                      fontWeight: isActive ? 800 : 600, 
+                      fontSize: '11px', 
+                      cursor: 'pointer', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '7px',
+                      flexShrink: 0,
+                      boxShadow: isActive ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none'
+                    }}
+                  >
+                    <div className={`nav-icon-container ${isActive ? 'icon-badge-active' : item.badgeClass}`} style={{ width: '22px', height: '22px', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={13} strokeWidth={isActive ? 2.5 : 2} />
+                    </div>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button onClick={() => alert('Webcam Barcode Scanner Triggered.')} style={{ background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Scan size={14} /> Scan QR (F1)
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <button onClick={() => alert('Webcam Barcode Scanner Triggered.')} style={{ background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '7px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: 'rgba(2, 132, 199, 0.12)', color: '#0284C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Scan size={12} />
+              </div>
+              <span>Scan QR (F1)</span>
             </button>
-            <button onClick={handleLogout} style={{ background: 'transparent', border: 'none', color: '#DC2626', cursor: 'pointer' }}><LogOut size={16} /></button>
+            <button onClick={handleLogout} title="Logout" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.25)', color: '#DC2626', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LogOut size={15} />
+            </button>
           </div>
         </header>
       );
@@ -777,42 +856,78 @@ export default function App() {
 
     if (role === 'NURSE') {
       return (
-        <header style={{ height: '72px', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
-          <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} title="Go to Main Home Page">
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Activity size={22} color="#FFF" />
+        <header className="header-glass" style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 28px', position: 'sticky', top: 0, zIndex: 50 }}>
+          <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flexShrink: 0 }} title="Go to Main Home Page">
+            <div className="brand-icon-glow" style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(220, 38, 38, 0.45)' }}>
+              <Activity size={22} color="#FFF" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
             </div>
             <div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>Smart Nursing Station</div>
-              <div className="font-data-mono" style={{ fontSize: '10px', color: '#DC2626', fontWeight: 800 }}>
+              <div style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>Smart Nursing Station</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '10px', background: 'rgba(220, 38, 38, 0.12)', color: '#DC2626', border: '1px solid rgba(220, 38, 38, 0.25)' }}>ICU HUD</span>
+              </div>
+              <div className="font-data-mono" style={{ fontSize: '10px', color: '#DC2626', fontWeight: 800, marginTop: '2px' }}>
                 {userProfile?.ward} • {userProfile?.name}
               </div>
             </div>
           </div>
 
-          <nav style={{ display: 'flex', gap: '4px', background: '#F1F5F9', padding: '4px', borderRadius: '8px' }}>
-            {[
-              { page: 'HOME', label: 'Main Home', icon: Globe },
-              { page: 'NURSE_TELEMETRY', label: 'Bed Telemetry HUD', icon: Activity },
-              { page: 'NURSE_EMAR', label: 'eMAR Med Schedule', icon: Pill },
-              { page: 'NURSE_FLUIDS', label: 'Fluid Charting', icon: Droplets },
-              { page: 'NURSE_SBAR', label: 'Shift Handoff (SBAR)', icon: FileText }
-            ].map((item) => {
-              const Icon = item.icon;
-              const isActive = activePage === item.page;
-              return (
-                <button key={item.page} onClick={() => setActivePage(item.page as PageRoute)} style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isActive ? '#DC2626' : 'transparent', color: isActive ? '#FFF' : '#475569', fontWeight: 700, fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Icon size={14} /> {item.label}
-                </button>
-              );
-            })}
-          </nav>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, margin: '0 16px', overflow: 'hidden' }}>
+            <nav 
+              className="scrollable-nav-bar"
+              onWheel={(e) => {
+                if (e.deltaY !== 0) {
+                  e.currentTarget.scrollLeft += e.deltaY;
+                }
+              }}
+            >
+              {[
+                { page: 'HOME', label: 'Main Home', icon: Home, badgeClass: 'icon-badge-home' },
+                { page: 'NURSE_TELEMETRY', label: 'Bed Telemetry HUD', icon: Activity, badgeClass: 'icon-badge-radar' },
+                { page: 'NURSE_EMAR', label: 'eMAR Med Schedule', icon: Pill, badgeClass: 'icon-badge-pharmacy' },
+                { page: 'NURSE_FLUIDS', label: 'Fluid Charting', icon: Droplets, badgeClass: 'icon-badge-cure' },
+                { page: 'NURSE_SBAR', label: 'Shift Handoff (SBAR)', icon: FileText, badgeClass: 'icon-badge-news' }
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = activePage === item.page;
+                return (
+                  <button 
+                    key={item.page} 
+                    onClick={() => setActivePage(item.page as PageRoute)} 
+                    className="nav-tab-btn"
+                    style={{ 
+                      padding: '6px 12px', 
+                      borderRadius: '8px', 
+                      border: isActive ? '1px solid rgba(220, 38, 38, 0.4)' : '1px solid transparent', 
+                      background: isActive ? 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)' : 'transparent', 
+                      color: isActive ? '#FFF' : '#334155', 
+                      fontWeight: isActive ? 800 : 600, 
+                      fontSize: '11px', 
+                      cursor: 'pointer', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '7px',
+                      flexShrink: 0,
+                      boxShadow: isActive ? '0 4px 14px rgba(220, 38, 38, 0.35)' : 'none'
+                    }}
+                  >
+                    <div className={`nav-icon-container ${isActive ? 'icon-badge-active' : item.badgeClass}`} style={{ width: '22px', height: '22px', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={13} strokeWidth={isActive ? 2.5 : 2} />
+                    </div>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button onClick={() => setCodeBlueAlert(!codeBlueAlert)} style={{ background: '#DC2626', color: '#FFF', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 14px rgba(220,38,38,0.4)', animation: codeBlueAlert ? 'pulse 1s infinite' : 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <button onClick={() => setCodeBlueAlert(!codeBlueAlert)} style={{ background: 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)', color: '#FFF', border: 'none', padding: '8px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '7px', boxShadow: '0 4px 14px rgba(220,38,38,0.4)', animation: codeBlueAlert ? 'pulse 1s infinite' : 'none' }}>
               <Flame size={16} /> CODE BLUE EMERGENCY
             </button>
-            <button onClick={handleLogout} style={{ background: 'transparent', border: 'none', color: '#DC2626', cursor: 'pointer' }}><LogOut size={16} /></button>
+            <button onClick={handleLogout} title="Logout" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.25)', color: '#DC2626', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LogOut size={15} />
+            </button>
           </div>
         </header>
       );
@@ -820,104 +935,250 @@ export default function App() {
 
     if (role === 'LAB_TECH') {
       return (
-        <header style={{ height: '72px', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
-          <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} title="Go to Main Home Page">
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FlaskConical size={22} color="#FFF" />
+        <header className="header-glass" style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 28px', position: 'sticky', top: 0, zIndex: 50 }}>
+          <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flexShrink: 0 }} title="Go to Main Home Page">
+            <div className="brand-icon-glow" style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #D97706 0%, #B45309 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(217, 119, 6, 0.45)' }}>
+              <FlaskConical size={22} color="#FFF" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
             </div>
             <div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: '#0F172A' }}>Diagnostic Lab & LIMS Hub</div>
-              <div className="font-data-mono" style={{ fontSize: '10px', color: '#D97706', fontWeight: 800 }}>
+              <div style={{ fontSize: '17px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>Diagnostic Lab & LIMS</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '10px', background: 'rgba(217, 119, 6, 0.12)', color: '#D97706', border: '1px solid rgba(217, 119, 6, 0.25)' }}>LIMS CORE</span>
+              </div>
+              <div className="font-data-mono" style={{ fontSize: '10px', color: '#D97706', fontWeight: 800, marginTop: '2px' }}>
                 {userProfile?.identifier} • Serial Port ONLINE
               </div>
             </div>
           </div>
 
-          <nav style={{ display: 'flex', gap: '4px', background: '#F1F5F9', padding: '4px', borderRadius: '8px' }}>
-            {[
-              { page: 'HOME', label: 'Main Home', icon: Globe },
-              { page: 'LAB_ACCESSION', label: 'Accession Queue', icon: TestTube },
-              { page: 'LAB_PACS_UPLOAD', label: 'PACS DICOM Dropzone', icon: UploadCloud },
-              { page: 'LAB_ANALYZER', label: 'LIMS Analyzer Sync', icon: Database },
-              { page: 'LAB_CRITICAL_DISPATCH', label: 'Critical Value Dispatch', icon: AlertTriangle }
-            ].map((item) => {
-              const Icon = item.icon;
-              const isActive = activePage === item.page;
-              return (
-                <button key={item.page} onClick={() => setActivePage(item.page as PageRoute)} style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isActive ? '#D97706' : 'transparent', color: isActive ? '#FFF' : '#475569', fontWeight: 700, fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Icon size={14} /> {item.label}
-                </button>
-              );
-            })}
-          </nav>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, margin: '0 16px', overflow: 'hidden' }}>
+            <nav 
+              className="scrollable-nav-bar"
+              onWheel={(e) => {
+                if (e.deltaY !== 0) {
+                  e.currentTarget.scrollLeft += e.deltaY;
+                }
+              }}
+            >
+              {[
+                { page: 'HOME', label: 'Main Home', icon: Home, badgeClass: 'icon-badge-home' },
+                { page: 'LAB_ACCESSION', label: 'Accession Queue', icon: TestTube, badgeClass: 'icon-badge-news' },
+                { page: 'LAB_PACS_UPLOAD', label: 'PACS DICOM Dropzone', icon: UploadCloud, badgeClass: 'icon-badge-doctor' },
+                { page: 'LAB_ANALYZER', label: 'LIMS Analyzer Sync', icon: Database, badgeClass: 'icon-badge-ai' },
+                { page: 'LAB_CRITICAL_DISPATCH', label: 'Critical Value Dispatch', icon: AlertTriangle, badgeClass: 'icon-badge-radar' }
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = activePage === item.page;
+                return (
+                  <button 
+                    key={item.page} 
+                    onClick={() => setActivePage(item.page as PageRoute)} 
+                    className="nav-tab-btn"
+                    style={{ 
+                      padding: '6px 12px', 
+                      borderRadius: '8px', 
+                      border: isActive ? '1px solid rgba(217, 119, 6, 0.4)' : '1px solid transparent', 
+                      background: isActive ? 'linear-gradient(135deg, #D97706 0%, #B45309 100%)' : 'transparent', 
+                      color: isActive ? '#FFF' : '#334155', 
+                      fontWeight: isActive ? 800 : 600, 
+                      fontSize: '11px', 
+                      cursor: 'pointer', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '7px',
+                      flexShrink: 0,
+                      boxShadow: isActive ? '0 4px 14px rgba(217, 119, 6, 0.35)' : 'none'
+                    }}
+                  >
+                    <div className={`nav-icon-container ${isActive ? 'icon-badge-active' : item.badgeClass}`} style={{ width: '22px', height: '22px', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={13} strokeWidth={isActive ? 2.5 : 2} />
+                    </div>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button onClick={() => alert('LOINC Code Auto-Standardizer executed.')} style={{ background: '#D97706', color: '#FFF', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <button onClick={() => alert('LOINC Code Auto-Standardizer executed.')} style={{ background: 'linear-gradient(135deg, #D97706 0%, #B45309 100%)', color: '#FFF', border: 'none', padding: '7px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
               Batch LOINC Sync
             </button>
-            <button onClick={handleLogout} style={{ background: 'transparent', border: 'none', color: '#DC2626', cursor: 'pointer' }}><LogOut size={16} /></button>
+            <button onClick={handleLogout} title="Logout" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(220, 38, 38, 0.1)', border: '1px solid rgba(220, 38, 38, 0.25)', color: '#DC2626', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LogOut size={15} />
+            </button>
           </div>
         </header>
       );
     }
 
-    // DEFAULT B2C PATIENT PORTAL NAVBAR WITH OUTBREAK RADAR & HEALTH NEWS
+    // DEFAULT B2C PATIENT PORTAL NAVBAR WITH ATTRACTIVE JEWEL-TONED ICON THEME
     return (
-      <header style={{ height: '72px', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0, 180, 216, 0.35)' }}>
-            <HeartPulse size={24} color="#FFFFFF" />
+      <header className="header-glass" style={{ height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50, gap: '12px' }}>
+        {/* Brand Logo with Glowing Jewel Aura */}
+        <div onClick={() => setActivePage('HOME')} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flexShrink: 0 }} title="MediVerse AI — Precision Health OS">
+          <div className="brand-icon-glow" style={{ width: '44px', height: '44px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <HeartPulse size={24} color="#FFFFFF" style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.25))' }} />
           </div>
           <div>
-            <div style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0F172A', lineHeight: '1' }}>
-              MediVerse <span style={{ color: '#0077B6' }}>AI</span>
+            <div style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0F172A', lineHeight: '1', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              MediVerse <span style={{ background: 'linear-gradient(135deg, #0284C7 0%, #00B4D8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
+              <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 6px', borderRadius: '10px', background: 'rgba(2, 132, 199, 0.1)', color: '#0284C7', border: '1px solid rgba(2, 132, 199, 0.25)', letterSpacing: '0.04em' }}>v8.0</span>
             </div>
-            <div className="font-data-mono" style={{ fontSize: '10px', color: '#64748B', marginTop: '3px', fontWeight: 600 }}>
-              CUREPOINT HEALTH OS
+            <div className="font-data-mono" style={{ fontSize: '10px', color: '#64748B', marginTop: '3px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>CUREPOINT HEALTH OS</span>
+              <span style={{ color: '#CBD5E1' }}>•</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#10B981' }}>
+                <span className="live-pulse-dot" style={{ width: '6px', height: '6px' }}></span>
+                <span>ONLINE</span>
+              </span>
             </div>
           </div>
         </div>
 
-        <nav style={{ display: 'flex', gap: '4px', background: '#F1F5F9', padding: '4px 6px', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
-          {[
-            { page: 'HOME', label: 'Home', icon: Globe },
-            { page: 'OUTBREAK_RADAR', label: 'Disease Radar', icon: Bug },
-            { page: 'HEALTH_NEWS', label: 'Local News', icon: Newspaper },
-            { page: 'BUY_MEDICINES', label: 'Buy Medicines', icon: Pill },
-            { page: 'MEDICAL_MAP', label: 'Medical Map', icon: Map },
-            { page: 'AI_HELP', label: 'AI Help', icon: Bot },
-            { page: 'HOME_CURE', label: 'Home Cure', icon: ShieldAlert },
-            { page: 'BOOK_APPOINTMENT', label: 'Book Doctor', icon: Calendar }
-          ].map((item) => {
-            const Icon = item.icon;
-            const isActive = activePage === item.page;
-            return (
-              <button key={item.page} onClick={() => setActivePage(item.page as PageRoute)} style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isActive ? 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)' : 'transparent', color: isActive ? '#FFFFFF' : '#475569', fontWeight: 700, fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
-                <Icon size={13} /> {item.label}
-              </button>
-            );
-          })}
-        </nav>
+        {/* Themed Horizontal Scrollable Navigation Pill Bar */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, margin: '0 12px', overflow: 'hidden' }}>
+          <nav 
+            className="scrollable-nav-bar"
+            onWheel={(e) => {
+              if (e.deltaY !== 0) {
+                e.currentTarget.scrollLeft += e.deltaY;
+              }
+            }}
+          >
+            {[
+              { page: 'HOME', label: 'Home', icon: Home, badgeClass: 'icon-badge-home' },
+              { page: 'OUTBREAK_RADAR', label: 'Disease Radar', icon: Bug, badgeClass: 'icon-badge-radar' },
+              { page: 'HEALTH_NEWS', label: 'Local News', icon: Newspaper, badgeClass: 'icon-badge-news' },
+              { page: 'BUY_MEDICINES', label: 'Buy Medicines', icon: Pill, badgeClass: 'icon-badge-pharmacy' },
+              { page: 'MEDICAL_MAP', label: 'Medical Map', icon: Map, badgeClass: 'icon-badge-map' },
+              { page: 'AI_HELP', label: 'AI Help', icon: Bot, badgeClass: 'icon-badge-ai' },
+              { page: 'HOME_CURE', label: 'Home Cure', icon: ShieldAlert, badgeClass: 'icon-badge-cure' },
+              { page: 'BOOK_APPOINTMENT', label: 'Book Doctor', icon: Calendar, badgeClass: 'icon-badge-doctor' }
+            ].map((item) => {
+              const Icon = item.icon;
+              const isActive = activePage === item.page;
+              return (
+                <button 
+                  key={item.page} 
+                  onClick={() => setActivePage(item.page as PageRoute)} 
+                  className="nav-tab-btn"
+                  style={{ 
+                    padding: '6px 11px', 
+                    borderRadius: '9px', 
+                    border: isActive ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid transparent', 
+                    background: isActive ? 'linear-gradient(135deg, #0284C7 0%, #0077B6 100%)' : 'transparent', 
+                    color: isActive ? '#FFFFFF' : '#334155', 
+                    fontWeight: isActive ? 800 : 600, 
+                    fontSize: '11.5px', 
+                    cursor: 'pointer', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                    boxShadow: isActive ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none'
+                  }}
+                >
+                  <div 
+                    className={`nav-icon-container ${isActive ? 'icon-badge-active' : item.badgeClass}`}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}
+                  >
+                    <Icon size={13} strokeWidth={isActive ? 2.5 : 2} />
+                  </div>
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <button onClick={() => setShowCartDrawer(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', background: 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)', color: '#FFFFFF', padding: '8px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 800, boxShadow: '0 4px 15px rgba(0, 180, 216, 0.35)' }}>
-            <ShoppingCart size={16} />
-            <span>Cart ({totalCartCount})</span>
-            <span style={{ background: '#FFFFFF', color: '#0077B6', padding: '2px 6px', borderRadius: '12px', fontSize: '10px', fontWeight: 800 }}>₹{cartTotal}</span>
+        {/* Right Side Actions: Emergency SOS, E-Pharmacy Cart, User Capsule / Login */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+          {/* Emergency SOS Button */}
+          <button
+            onClick={() => alert('🚨 EMERGENCY HOTLINE CONNECTED: Calling 108 / 112 Trauma SOS Bay Dispatch.')}
+            title="Emergency SOS Hotline"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              height: '38px',
+              padding: '0 12px',
+              borderRadius: '9px',
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.2) 100%)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              color: '#DC2626',
+              fontSize: '11.5px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              transition: 'all 0.22s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+          >
+            <Flame size={15} color="#DC2626" />
+            <span>SOS 108</span>
           </button>
 
+          {/* E-Pharmacy Cart Capsule */}
+          <button 
+            onClick={() => setShowCartDrawer(true)} 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              height: '38px',
+              fontSize: '12px', 
+              background: 'linear-gradient(135deg, #0284C7 0%, #0077B6 100%)', 
+              color: '#FFFFFF', 
+              padding: '0 14px', 
+              borderRadius: '9px', 
+              border: 'none', 
+              cursor: 'pointer', 
+              fontWeight: 800, 
+              boxShadow: '0 4px 15px rgba(2, 132, 199, 0.35)',
+              transition: 'all 0.22s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ShoppingCart size={15} />
+            </div>
+            <span>Cart</span>
+            <span style={{ background: 'rgba(255, 255, 255, 0.25)', color: '#FFFFFF', padding: '1px 6px', borderRadius: '10px', fontSize: '10px', fontWeight: 800 }}>{totalCartCount}</span>
+            <span style={{ background: '#FFFFFF', color: '#0077B6', padding: '2px 6px', borderRadius: '10px', fontSize: '10px', fontWeight: 800 }}>₹{cartTotal}</span>
+          </button>
+
+          {/* User Profile or Perfectly Arranged Sign In Button */}
           {userProfile ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#F8FAFC', padding: '4px 10px', borderRadius: '6px', border: '1px solid #CBD5E1' }}>
-              <User size={14} color="#0077B6" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#FFFFFF', height: '38px', padding: '0 12px', borderRadius: '9px', border: '1px solid #CBD5E1', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+              <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF' }}>
+                <User size={13} />
+              </div>
               <div style={{ fontSize: '11px', lineHeight: '1.2' }}>
                 <div style={{ fontWeight: 800, color: '#0F172A' }}>{userProfile.name}</div>
-                <div className="font-data-mono" style={{ fontSize: '9px', color: '#64748B' }}>{userProfile.role}</div>
+                <div className="font-data-mono" style={{ fontSize: '9px', color: '#0077B6', fontWeight: 700 }}>{userProfile.role}</div>
               </div>
-              <button onClick={handleLogout} title="Logout" style={{ background: 'transparent', border: 'none', color: '#DC2626', cursor: 'pointer', marginLeft: '4px', display: 'flex' }}><LogOut size={14} /></button>
+              <button onClick={handleLogout} title="Logout" style={{ background: 'transparent', border: 'none', color: '#DC2626', cursor: 'pointer', marginLeft: '4px', display: 'flex', padding: '2px' }}>
+                <LogOut size={14} />
+              </button>
             </div>
           ) : (
-            <button onClick={() => setShowLoginModal(true)} style={{ background: '#F1F5F9', border: '1px solid #CBD5E1', color: '#0F172A', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <LogIn size={14} /> Sign In
+            <button 
+              onClick={() => setShowLoginModal(true)} 
+              className="header-login-btn"
+              title="Access MediVerse Portal"
+            >
+              <div className="login-icon-box" style={{ width: '22px', height: '22px', borderRadius: '6px', background: 'rgba(2, 132, 199, 0.14)', color: '#0284C7', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                <LogIn size={13} strokeWidth={2.5} />
+              </div>
+              <span>Sign In</span>
             </button>
           )}
         </div>
@@ -990,20 +1251,20 @@ export default function App() {
             </button>
 
             {/* TOGGLE TAB HEADER */}
-            <div style={{ display: 'flex', background: '#F1F5F9', padding: '4px', borderRadius: '30px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', background: '#F1F5F9', padding: '4px', borderRadius: '14px', marginBottom: '22px', border: '1px solid #E2E8F0' }}>
               <button 
                 type="button"
                 onClick={() => setAuthMode('LOGIN')}
-                style={{ flex: 1, padding: '8px 16px', borderRadius: '24px', border: 'none', background: authMode === 'LOGIN' ? '#1B365D' : 'transparent', color: authMode === 'LOGIN' ? '#FFFFFF' : '#64748B', fontWeight: 800, fontSize: '12px', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ flex: 1, padding: '10px 16px', borderRadius: '10px', border: 'none', background: authMode === 'LOGIN' ? 'linear-gradient(135deg, #0284C7 0%, #0077B6 100%)' : 'transparent', color: authMode === 'LOGIN' ? '#FFFFFF' : '#64748B', fontWeight: 800, fontSize: '12px', cursor: 'pointer', transition: 'all 0.2s', boxShadow: authMode === 'LOGIN' ? '0 4px 14px rgba(2, 132, 199, 0.3)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
               >
-                LOG IN
+                <LogIn size={14} /> LOG IN
               </button>
               <button 
                 type="button"
                 onClick={() => setAuthMode('REGISTER')}
-                style={{ flex: 1, padding: '8px 16px', borderRadius: '24px', border: 'none', background: authMode === 'REGISTER' ? '#1B365D' : 'transparent', color: authMode === 'REGISTER' ? '#FFFFFF' : '#64748B', fontWeight: 800, fontSize: '12px', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ flex: 1, padding: '10px 16px', borderRadius: '10px', border: 'none', background: authMode === 'REGISTER' ? 'linear-gradient(135deg, #0284C7 0%, #0077B6 100%)' : 'transparent', color: authMode === 'REGISTER' ? '#FFFFFF' : '#64748B', fontWeight: 800, fontSize: '12px', cursor: 'pointer', transition: 'all 0.2s', boxShadow: authMode === 'REGISTER' ? '0 4px 14px rgba(2, 132, 199, 0.3)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
               >
-                CREATE NEW ACCOUNT
+                <UserCheck size={14} /> CREATE NEW ACCOUNT
               </button>
             </div>
 
@@ -1098,25 +1359,14 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* LOG IN BUTTON */}
+                  {/* PERFECTLY ARRANGED PRIMARY LOG IN BUTTON */}
                   <button 
                     type="submit" 
-                    style={{ 
-                      width: '100%', 
-                      background: '#27487F', 
-                      color: '#FFFFFF', 
-                      border: 'none', 
-                      padding: '14px', 
-                      borderRadius: '24px', 
-                      fontWeight: 800, 
-                      fontSize: '14px', 
-                      letterSpacing: '0.05em', 
-                      cursor: 'pointer', 
-                      marginTop: '4px',
-                      boxShadow: '0 6px 18px rgba(39, 72, 127, 0.35)'
-                    }}
+                    className="primary-login-btn"
                   >
-                    LOG IN
+                    <LogIn size={17} strokeWidth={2.5} />
+                    <span>LOG IN TO PORTAL</span>
+                    <ArrowRight size={17} />
                   </button>
                 </form>
 
@@ -1130,19 +1380,19 @@ export default function App() {
                 {/* SOCIAL LOGINS */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <button type="button" onClick={() => handleSocialLogin('Google')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => handleSocialLogin('Google')} className="social-login-btn">
                       <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                      Continue with Google
+                      <span>Google</span>
                     </button>
-                    <button type="button" onClick={() => handleSocialLogin('Apple')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => handleSocialLogin('Apple')} className="social-login-btn">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.47c.65-.8 1.09-1.92.97-3.04-.94.04-2.08.63-2.75 1.42-.6.7-1.12 1.83-.98 2.93 1.05.08 2.11-.51 2.76-1.31z"/></svg>
-                      Continue with Apple
+                      <span>Apple</span>
                     </button>
                   </div>
 
-                  <button type="button" onClick={() => handleSocialLogin('MediVerse Key')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '11px 14px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#1B365D', cursor: 'pointer' }}>
-                    <Key size={16} color="#1B365D" />
-                    Continue with MediVerse Key
+                  <button type="button" onClick={() => handleSocialLogin('MediVerse Key')} className="social-login-btn" style={{ width: '100%' }}>
+                    <Key size={16} color="#0284C7" />
+                    <span>Continue with MediVerse Key</span>
                   </button>
                 </div>
 
@@ -1340,22 +1590,16 @@ export default function App() {
                   {/* CREATE PATIENT ACCOUNT BUTTON */}
                   <button 
                     type="submit" 
+                    className="primary-login-btn"
                     style={{ 
-                      width: '100%', 
-                      background: '#27487F', 
-                      color: '#FFFFFF', 
-                      border: 'none', 
-                      padding: '14px', 
-                      borderRadius: '24px', 
-                      fontWeight: 800, 
-                      fontSize: '14px', 
-                      letterSpacing: '0.05em', 
-                      cursor: 'pointer', 
-                      marginTop: '6px',
-                      boxShadow: '0 6px 18px rgba(39, 72, 127, 0.35)'
+                      background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                      boxShadow: '0 6px 22px rgba(16, 185, 129, 0.42)',
+                      marginTop: '6px'
                     }}
                   >
-                    CREATE PATIENT ACCOUNT
+                    <UserCheck size={18} strokeWidth={2.5} />
+                    <span>CREATE PATIENT ACCOUNT</span>
+                    <ArrowRight size={17} />
                   </button>
                 </form>
 
@@ -1717,25 +1961,14 @@ export default function App() {
                 </div>
               </div>
 
-              {/* LOG IN BUTTON */}
+              {/* PERFECTLY ARRANGED PRIMARY LOG IN BUTTON */}
               <button 
                 type="submit" 
-                style={{ 
-                  width: '100%', 
-                  background: '#27487F', 
-                  color: '#FFFFFF', 
-                  border: 'none', 
-                  padding: '14px', 
-                  borderRadius: '24px', 
-                  fontWeight: 800, 
-                  fontSize: '14px', 
-                  letterSpacing: '0.05em', 
-                  cursor: 'pointer', 
-                  marginTop: '4px',
-                  boxShadow: '0 6px 18px rgba(39, 72, 127, 0.35)'
-                }}
+                className="primary-login-btn"
               >
-                LOG IN
+                <LogIn size={17} strokeWidth={2.5} />
+                <span>LOG IN TO PORTAL</span>
+                <ArrowRight size={17} />
               </button>
             </form>
 
@@ -1749,19 +1982,19 @@ export default function App() {
             {/* SOCIAL LOGINS */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <button type="button" onClick={() => handleSocialLogin('Google')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
+                <button type="button" onClick={() => handleSocialLogin('Google')} className="social-login-btn">
                   <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                  Continue with Google
+                  <span>Google</span>
                 </button>
-                <button type="button" onClick={() => handleSocialLogin('Apple')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 12px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#0F172A', cursor: 'pointer' }}>
+                <button type="button" onClick={() => handleSocialLogin('Apple')} className="social-login-btn">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.47c.65-.8 1.09-1.92.97-3.04-.94.04-2.08.63-2.75 1.42-.6.7-1.12 1.83-.98 2.93 1.05.08 2.11-.51 2.76-1.31z"/></svg>
-                  Continue with Apple
+                  <span>Apple</span>
                 </button>
               </div>
 
-              <button type="button" onClick={() => handleSocialLogin('MediVerse Key')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '11px 14px', borderRadius: '24px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '12px', fontWeight: 700, color: '#1B365D', cursor: 'pointer' }}>
-                <Key size={16} color="#1B365D" />
-                Continue with MediVerse Key
+              <button type="button" onClick={() => handleSocialLogin('MediVerse Key')} className="social-login-btn" style={{ width: '100%' }}>
+                <Key size={16} color="#0284C7" />
+                <span>Continue with MediVerse Key</span>
               </button>
             </div>
 

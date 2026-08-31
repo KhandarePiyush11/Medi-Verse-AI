@@ -17,7 +17,10 @@ import {
   Stethoscope,
   Globe,
   Brain,
-  Fingerprint
+  Fingerprint,
+  Home,
+  Radio,
+  Bug
 } from 'lucide-react';
 
 export default function ConsumerLandingPage() {
@@ -30,55 +33,105 @@ export default function ConsumerLandingPage() {
       
       {/* Stitch Design System Top Header */}
       <header style={{ 
-        height: '72px', 
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)', 
-        backgroundColor: 'rgba(11, 14, 21, 0.9)', 
-        backdropFilter: 'blur(20px)',
+        height: '76px', 
+        borderBottom: '1px solid rgba(0, 242, 254, 0.15)', 
+        backgroundColor: 'rgba(11, 14, 21, 0.85)', 
+        backdropFilter: 'blur(24px)',
         position: 'sticky',
         top: 0,
         zIndex: 100,
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between', 
-        padding: '0 48px' 
+        padding: '0 48px',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div style={{ 
-            width: '42px', 
-            height: '42px', 
-            borderRadius: '10px', 
+            width: '44px', 
+            height: '44px', 
+            borderRadius: '12px', 
             background: 'linear-gradient(135deg, #00f2fe 0%, #3196e6 100%)', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(0, 242, 254, 0.4)'
+            boxShadow: '0 0 25px rgba(0, 242, 254, 0.5)',
+            border: '1px solid rgba(255, 255, 255, 0.4)'
           }}>
             <Brain size={26} color="#00373a" />
           </div>
           <div>
-            <div style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#e0fdff' }}>
+            <div style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#e0fdff', display: 'flex', alignItems: 'center', gap: '8px' }}>
               NEUROSYNAPSE <span style={{ color: '#00f2fe' }}>HEALTH OS</span>
+              <span style={{ fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '10px', background: 'rgba(0, 242, 254, 0.15)', color: '#00f2fe', border: '1px solid rgba(0, 242, 254, 0.3)' }}>v8.0 BIO-TECH</span>
             </div>
-            <div style={{ fontSize: '11px', color: '#849495', fontFamily: 'JetBrains Mono, monospace' }}>
-              SOVEREIGN B2C HEALTH GATEWAY | ABDM M1-M3 COMPLIANT
+            <div style={{ fontSize: '10px', color: '#849495', fontFamily: 'JetBrains Mono, monospace', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>SOVEREIGN B2C HEALTH GATEWAY</span>
+              <span style={{ color: '#475569' }}>•</span>
+              <span style={{ color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }}></span>
+                ABDM M1-M3 COMPLIANT
+              </span>
             </div>
           </div>
         </div>
 
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '32px', fontSize: '14px', fontWeight: 600 }}>
-          <a href="#hero" style={{ color: '#e0e2ed', textDecoration: 'none' }}>Home</a>
-          <a href="#outbreak-radar" style={{ color: '#b9cacb', textDecoration: 'none' }}>Outbreak Radar</a>
-          <a href="#samd-preview" style={{ color: '#b9cacb', textDecoration: 'none' }}>SaMD Studio</a>
-          <a href="#ecosystem" style={{ color: '#b9cacb', textDecoration: 'none' }}>Ecosystem</a>
-        </nav>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, margin: '0 16px', overflow: 'hidden' }}>
+          <nav 
+            onWheel={(e) => {
+              if (e.deltaY !== 0) {
+                e.currentTarget.scrollLeft += e.deltaY;
+              }
+            }}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              background: 'rgba(255, 255, 255, 0.04)', 
+              padding: '5px 8px', 
+              borderRadius: '14px', 
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%',
+              scrollbarWidth: 'thin'
+            }}
+          >
+            <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#e0e2ed', textDecoration: 'none', padding: '6px 14px', borderRadius: '10px', fontSize: '13px', fontWeight: 700, background: 'rgba(0, 242, 254, 0.15)', border: '1px solid rgba(0, 242, 254, 0.3)', flexShrink: 0 }}>
+              <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: 'rgba(0, 242, 254, 0.25)', color: '#00f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Home size={13} />
+              </div>
+              Home
+            </a>
+            <a href="#outbreak-radar" style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#b9cacb', textDecoration: 'none', padding: '6px 14px', borderRadius: '10px', fontSize: '13px', fontWeight: 600, transition: 'all 0.2s', flexShrink: 0 }}>
+              <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Bug size={13} />
+              </div>
+              Outbreak Radar
+            </a>
+            <a href="#samd-preview" style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#b9cacb', textDecoration: 'none', padding: '6px 14px', borderRadius: '10px', fontSize: '13px', fontWeight: 600, transition: 'all 0.2s', flexShrink: 0 }}>
+              <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Cpu size={13} />
+              </div>
+              SaMD Studio
+            </a>
+            <a href="#ecosystem" style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#b9cacb', textDecoration: 'none', padding: '6px 14px', borderRadius: '10px', fontSize: '13px', fontWeight: 600, transition: 'all 0.2s', flexShrink: 0 }}>
+              <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: 'rgba(160, 185, 129, 0.15)', color: '#34d399', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Layers size={13} />
+              </div>
+              Ecosystem
+            </a>
+          </nav>
+        </div>
 
         <a 
           href="http://localhost:5173"
           target="_blank"
           rel="noreferrer"
           style={{ 
-            padding: '10px 20px', 
-            borderRadius: '6px', 
+            padding: '10px 22px', 
+            borderRadius: '10px', 
             background: 'linear-gradient(135deg, #00f2fe 0%, #3196e6 100%)', 
             color: '#00373a', 
             fontWeight: 800, 
@@ -87,7 +140,9 @@ export default function ConsumerLandingPage() {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 0 20px rgba(0, 242, 254, 0.3)'
+            flexShrink: 0,
+            boxShadow: '0 0 25px rgba(0, 242, 254, 0.4)',
+            border: '1px solid rgba(255, 255, 255, 0.4)'
           }}
         >
           <Stethoscope size={16} /> Launch Clinical Workstation
