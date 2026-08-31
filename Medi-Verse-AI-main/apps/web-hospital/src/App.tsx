@@ -451,7 +451,7 @@ export default function App() {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   // Cart Drawer State
-  const [cart, setCart] = useState<{ [key: string]: number }>({ 'm-1': 1, 'm-4': 2 });
+  const [cart, setCart] = useState<{ [key: string]: number }>({});
   const [showCartDrawer, setShowCartDrawer] = useState(false);
 
   // Stitch AI Medical Map State
