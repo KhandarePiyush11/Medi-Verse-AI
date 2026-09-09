@@ -10,14 +10,17 @@ const rootDir = path.resolve(__dirname, '..');
 // Find monorepo directory (supports both root or subfolder Medi-Verse-AI-main)
 const baseDir = fs.existsSync(path.join(rootDir, 'Medi-Verse-AI-main', 'apps'))
   ? path.join(rootDir, 'Medi-Verse-AI-main')
-  : rootDir;
+  : (fs.existsSync(path.join(rootDir, 'apps')) ? rootDir : path.join(rootDir, 'Medi-Verse-AI-main'));
 
-const appsDir = path.join(baseDir, 'apps');
+const appsDir = fs.existsSync(path.join(baseDir, 'apps'))
+  ? path.join(baseDir, 'apps')
+  : path.join(rootDir, 'apps');
+
 const outputDist = path.join(rootDir, 'dist');
 
-console.log('🏥 [MediVerse AI Deployment Builder]');
+console.log('🏥 [MediVerse AI Fast Production Builder]');
 console.log(`📂 Root Directory: ${rootDir}`);
-console.log(`📂 Base Directory: ${baseDir}`);
+console.log(`📂 Apps Directory: ${appsDir}`);
 console.log(`🎯 Output Directory: ${outputDist}`);
 
 function copyFolderSync(from, to) {
@@ -41,24 +44,26 @@ function buildApp(appName, destSubDir) {
     console.warn(`⚠️ Warning: App ${appName} not found at ${appPath}`);
     return;
   }
-  console.log(`\n🚀 Building ${appName}...`);
-  
-  // Install dependencies in app if node_modules doesn't exist
-  if (!fs.existsSync(path.join(appPath, 'node_modules')) && !fs.existsSync(path.join(baseDir, 'node_modules'))) {
-    console.log(`📦 Installing dependencies for ${appName}...`);
-    execSync('npm install', { cwd: appPath, stdio: 'inherit' });
-  }
+  console.log(`\n🚀 Building Portal: ${appName}...`);
 
-  // Build app
-  execSync('npm run build', { cwd: appPath, stdio: 'inherit' });
+  // Build app using Vite (with base ./ for portable static deployment)
+  try {
+    execSync('npx vite build', { cwd: appPath, stdio: 'inherit' });
+  } catch (e) {
+    console.log(`📦 Running npm install for ${appName}...`);
+    execSync('npm install --legacy-peer-deps --no-audit', { cwd: appPath, stdio: 'inherit' });
+    execSync('npx vite build', { cwd: appPath, stdio: 'inherit' });
+  }
 
   const appDist = path.join(appPath, 'dist');
   if (fs.existsSync(appDist)) {
     const targetDest = destSubDir ? path.join(outputDist, destSubDir) : outputDist;
-    console.log(`📋 Copying ${appName} dist to ${targetDest}...`);
+    console.log(`📋 Bundling ${appName} into ${targetDest}...`);
     copyFolderSync(appDist, targetDest);
+    console.log(`✅ ${appName} bundle ready!`);
   } else {
     console.error(`❌ Error: dist folder not found for ${appName}`);
+    process.exit(1);
   }
 }
 
