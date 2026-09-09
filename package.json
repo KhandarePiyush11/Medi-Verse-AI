@@ -1,0 +1,19 @@
+{
+  "name": "mediverse-ai-ecosystem",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "cd Medi-Verse-AI-main && npx turbo run dev"
+  },
+  "keywords": [
+    "mediverse",
+    "healthcare",
+    "clinical-os",
+    "hospital-management",
+    "emergency-telemetry"
+  ],
+  "author": "Piyush Khandare",
+  "license": "MIT"
+}

@@ -1,7 +1,12 @@
 node_modules
 dist
 .next
+.turbo
 .antigravity
 .DS_Store
 *.log
+*.env
+*.env.local
+__pycache__
+.pytest_cache
 

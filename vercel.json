@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "node scripts/build.js",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/hospital/(.*)", "destination": "/hospital/$1" },
+    { "source": "/hospital", "destination": "/hospital/index.html" },
+    { "source": "/manager/(.*)", "destination": "/manager/$1" },
+    { "source": "/manager", "destination": "/manager/index.html" },
+    { "source": "/emergency/(.*)", "destination": "/emergency/$1" },
+    { "source": "/emergency", "destination": "/emergency/index.html" },
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
+}
