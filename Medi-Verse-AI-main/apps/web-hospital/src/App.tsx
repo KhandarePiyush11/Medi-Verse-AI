@@ -100,6 +100,7 @@ import {
   OfflinePrescription 
 } from './services/offlineDb';
 import { StaffPortal } from './portals/StaffPortal';
+import { AIHelpHub } from './components/ai-help/AIHelpHub';
 
 // 5 DISTINCT MASTER ROLES
 type UserRole = 'PATIENT' | 'DOCTOR' | 'RECEPTION' | 'NURSE' | 'LAB_TECH';
@@ -3552,7 +3553,8 @@ export default function App() {
     return sum + (item ? item.price * qty : 0);
   }, 0);
 
-  const activeSlide = heroSlides[currentSlide];  // RENDER CUSTOM NAVBAR PER ROLE MATRICES WITH TRANSPARENT GLASS & ATTRACTIVE ILLUMINATED ICON THEME
+  const activeSlide = heroSlides[currentSlide];
+  // RENDER CUSTOM NAVBAR PER ROLE MATRICES WITH TRANSPARENT GLASS & ATTRACTIVE ILLUMINATED ICON THEME
   const renderRoleCustomNavbar = () => {
     const role = userProfile?.role || 'PATIENT';
 
@@ -3980,73 +3982,21 @@ export default function App() {
           </nav>
         </div>
 
-        {/* Right Side: Manager Premium Button & Profile */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <button
-            onClick={() => {
-              const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port;
-              window.open(isLocal ? 'http://localhost:5174' : '/manager/', '_blank');
-            }}
-            style={{
-              background: 'linear-gradient(135deg, #00F2FE 0%, #0284C7 100%)',
-              color: '#00373A',
-              border: '1px solid rgba(255, 255, 255, 0.5)',
-              padding: '7px 14px',
-              borderRadius: '9px',
-              fontSize: '11px',
-              fontWeight: 900,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 0 16px rgba(0, 242, 254, 0.4)',
-              transition: 'all 0.2s',
-              whiteSpace: 'nowrap'
-            }}
-            title="Open MediVerse Manager Premium Login Platform"
-          >
-            <Sparkles size={13} color="#00373A" />
-            <span>MANAGER PREMIUM</span>
-            <ArrowRight size={12} />
-          </button>
-
-          <a
-            href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port ? 'http://localhost:5176' : '/'}
-            style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              color: '#94A3B8',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              padding: '7px 11px',
-              borderRadius: '9px',
-              fontSize: '11px',
-              fontWeight: 700,
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-              whiteSpace: 'nowrap'
-            }}
-            title="Back to MediVerse Precision Health OS Main Home"
-          >
-            <Home size={12} />
-            <span>Home Portal</span>
-          </a>
-
-          {userProfile && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(15, 23, 42, 0.7)', height: '36px', padding: '0 10px', borderRadius: '9px', border: '1px solid rgba(255, 255, 255, 0.2)', boxShadow: '0 2px 8px rgba(0,0,0,0.2)', flexShrink: 0 }}>
-              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF' }}>
-                <User size={12} />
-              </div>
-              <div style={{ fontSize: '10.5px', lineHeight: '1.2' }}>
-                <div style={{ fontWeight: 800, color: '#FFFFFF' }}>{userProfile.name}</div>
-                <div className="font-data-mono" style={{ fontSize: '8.5px', color: '#38BDF8', fontWeight: 700 }}>{userProfile.role}</div>
-              </div>
-              <button onClick={handleLogout} title="Logout" style={{ background: 'transparent', border: 'none', color: '#F87171', cursor: 'pointer', marginLeft: '4px', display: 'flex', padding: '2px' }}>
-                <LogOut size={13} />
-              </button>
+        {/* Right Side: Authenticated User Profile (only if logged in) */}
+        {userProfile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(15, 23, 42, 0.7)', height: '36px', padding: '0 10px', borderRadius: '9px', border: '1px solid rgba(255, 255, 255, 0.2)', boxShadow: '0 2px 8px rgba(0,0,0,0.2)', flexShrink: 0, marginLeft: '12px' }}>
+            <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'linear-gradient(135deg, #00B4D8 0%, #0077B6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF' }}>
+              <User size={12} />
             </div>
-          )}
-        </div>
+            <div style={{ fontSize: '10.5px', lineHeight: '1.2' }}>
+              <div style={{ fontWeight: 800, color: '#FFFFFF' }}>{userProfile.name}</div>
+              <div className="font-data-mono" style={{ fontSize: '8.5px', color: '#38BDF8', fontWeight: 700 }}>{userProfile.role}</div>
+            </div>
+            <button onClick={handleLogout} title="Logout" style={{ background: 'transparent', border: 'none', color: '#F87171', cursor: 'pointer', marginLeft: '4px', display: 'flex', padding: '2px' }}>
+              <LogOut size={13} />
+            </button>
+          </div>
+        )}
       </header>
     );
   };
@@ -5041,7 +4991,10 @@ export default function App() {
 
               <div 
                 className="glass-panel" 
-                onClick={() => window.open('http://localhost:5175', '_blank')}
+                onClick={() => {
+                  const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port;
+                  window.open(isLocal ? 'http://localhost:5175' : '/emergency/', '_blank');
+                }}
                 style={{ 
                   padding: '28px', 
                   background: '#FFFFFF', 
@@ -5350,7 +5303,10 @@ export default function App() {
                 </button>
 
                 <button
-                  onClick={() => window.open('http://localhost:5175', '_blank')}
+                  onClick={() => {
+                    const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port;
+                    window.open(isLocal ? 'http://localhost:5175' : '/emergency/', '_blank');
+                  }}
                   style={{
                     background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.35) 100%)',
                     color: '#FCA5A5',
@@ -6229,7 +6185,8 @@ export default function App() {
 
                     <button
                       onClick={() => {
-                        window.open('http://localhost:5175', '_blank');
+                        const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port;
+                        window.open(isLocal ? 'http://localhost:5175' : '/emergency/', '_blank');
                         setShowDispatchModal(null);
                       }}
                       style={{
@@ -6277,10 +6234,8 @@ export default function App() {
       })()}
 
       {activePage === 'AI_HELP' && (
-        <div style={{ padding: '32px 48px', flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <div style={{ fontSize: '24px', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Bot size={28} color="#0077B6" /> AI BASED CLINICAL ASSISTANT
-          </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <AIHelpHub onNavigateToPage={(p) => setActivePage(p as PageRoute)} />
         </div>
       )}
 

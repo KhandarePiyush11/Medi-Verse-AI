@@ -8,6 +8,10 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "allowScripts": {
+    "unrs-resolver": true,
+    "esbuild": true
+  },
   "devDependencies": {
     "turbo": "^2.0.0",
     "prettier": "^3.2.5"

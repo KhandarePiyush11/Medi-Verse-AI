@@ -159,6 +159,26 @@ export default function App() {
     return '/hospital/';
   };
 
+  const getEmergencyUrl = () => {
+    if (typeof window !== 'undefined') {
+      const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port;
+      if (isLocal) {
+        return 'http://localhost:5175/';
+      }
+    }
+    return '/emergency/';
+  };
+
+  const getManagerUrl = () => {
+    if (typeof window !== 'undefined') {
+      const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port;
+      if (isLocal) {
+        return 'http://localhost:5174/';
+      }
+    }
+    return '/manager/';
+  };
+
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const identifier = loginForm.email || loginForm.name || 'Dr. Aryan Sharma';
@@ -333,7 +353,7 @@ export default function App() {
             <button 
               onClick={() => {
                 if (activeSlide.id === 3) {
-                  window.open('http://localhost:5175', '_blank');
+                  window.open(getEmergencyUrl(), '_blank');
                 } else {
                   setShowLoginModal(true);
                 }
@@ -648,7 +668,7 @@ export default function App() {
           {/* Pillar 4: Autonomous 108 Emergency OS */}
           <div 
             className="glass-panel" 
-            onClick={() => window.open('http://localhost:5175', '_blank')}
+            onClick={() => window.open(getEmergencyUrl(), '_blank')}
             style={{ 
               padding: '32px', 
               background: '#FFFFFF', 
@@ -1110,7 +1130,7 @@ export default function App() {
               </button>
 
               <button
-                onClick={() => window.open('http://localhost:5175', '_blank')}
+                onClick={() => window.open(getEmergencyUrl(), '_blank')}
                 style={{ background: 'rgba(0,0,0,0.25)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.4)', padding: '14px 28px', borderRadius: '30px', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
                 <Ambulance size={16} />
@@ -1146,7 +1166,7 @@ export default function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px' }}>
               <span style={{ cursor: 'pointer' }} onClick={() => setShowLoginModal(true)}>3D WebGPU PACS</span>
               <span style={{ cursor: 'pointer' }} onClick={() => setShowLoginModal(true)}>SaMD CDSS Engine</span>
-              <span style={{ cursor: 'pointer' }} onClick={() => window.open('http://localhost:5175', '_blank')}>108 Emergency Radar</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => window.open(getEmergencyUrl(), '_blank')}>108 Emergency Radar</span>
               <span style={{ cursor: 'pointer' }} onClick={() => setShowLoginModal(true)}>ABDM M3 Health Passport</span>
               <span style={{ cursor: 'pointer' }} onClick={() => setShowLoginModal(true)}>Express E-Pharmacy</span>
             </div>

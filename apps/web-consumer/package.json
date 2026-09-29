@@ -8,6 +8,10 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "allowScripts": {
+    "unrs-resolver": true,
+    "esbuild": true
+  },
   "dependencies": {
     "next": "^14.1.0",
     "react": "^18.2.0",
